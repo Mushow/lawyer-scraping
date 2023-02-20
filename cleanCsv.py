@@ -11,6 +11,11 @@ def checkDupes(df, column):
     return df
 
 
+def sanitiseEmails(df, column):
+    df[column] = df[column].str.split(',', n=1, expand=True)[0]
+    return df
+
+
 def toNumeric(df, column):
     df[column] = pd.to_numeric(df[column], errors='coerce')
     return df
