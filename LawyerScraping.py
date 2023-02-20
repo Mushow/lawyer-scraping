@@ -90,12 +90,17 @@ async def main():
 
         df = pd.DataFrame(lawyers_data)
         df = df.sort_values('Name', ascending=True)
-        df = df.loc[df['Phone'].duplicated(keep=False), :]
-        df = df.loc[df['Name'].duplicated(keep=False), :]
-        df['Sworn Date'] = pd.to_datetime(df['Sworn Date'], format='%d/%m/%Y', errors='coerce')
+        df = clean_data(df)
         df.to_csv('lawyers.csv', index=False)
 
         return lawyers_data
+
+
+def clean_data(data_frame):
+
+    # Clean data
+
+    return data_frame
 
 
 if __name__ == '__main__':
