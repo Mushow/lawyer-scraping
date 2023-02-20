@@ -44,6 +44,9 @@ async def get_lawyer(session, link):
                     case "Code postal":
                         postal_code = get_clean_text(info.find('p')).upper()
 
+            if cases or sworn_date or address or postal_code is None:
+                pass
+
             return Lawyer(name, number, email, cases, sworn_date, address, postal_code)
         except AttributeError:
             pass
@@ -73,7 +76,7 @@ def sort_df(df, value):
 
 
 def numeric_df(df, param):
-    df[param] = pd.Series(df[param], dtype="Int64")
+    df[param] = pd.to_numeric(df[param], errors='coerce')
     return df
 
 
