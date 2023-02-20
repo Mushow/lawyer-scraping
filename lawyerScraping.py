@@ -4,8 +4,9 @@ import time
 
 import aiohttp
 import pandas as pd
+import cleanCsv
 from bs4 import BeautifulSoup
-from Lawyer import Lawyer
+from lawyer import Lawyer
 
 
 async def get_links(session, url):
@@ -17,6 +18,29 @@ async def get_links(session, url):
 
 def get_clean_text(text):
     return re.sub(' +', ' ', text.get_text(strip=True))
+
+
+def to_date(sworn_date):
+    months = {
+        "janvier": 1,
+        "février": 2,
+        "mars": 3,
+        "avril": 4,
+        "mai": 5,
+        "juin": 6,
+        "juillet": 7,
+        "août": 8,
+        "septembre": 9,
+        "octobre": 10,
+        "novembre": 11,
+        "décembre": 12
+    }
+
+    day, month_name, year = sworn_date.split()
+    month = months[month_name]
+    date = f"{day}/{month:02d}/{year}"
+
+    return date
 
 
 async def get_lawyer(session, link):
@@ -47,7 +71,7 @@ async def get_lawyer(session, link):
             if cases or sworn_date or address or postal_code is None:
                 pass
 
-            return Lawyer(name, number, email, cases, sworn_date, address, postal_code)
+            return Lawyer(name, number, email, cases, to_date(sworn_date), address, postal_code)
         except AttributeError:
             pass
 
@@ -83,7 +107,7 @@ def numeric_df(df, param):
 async def main():
     baseUrl = "https://www.barreaulyon.com/"
     uri = "annuaire?paged="
-    lastPage = 333
+    lastPage = 5
 
     async with aiohttp.ClientSession() as session:
         links_tasks = []
@@ -106,6 +130,7 @@ async def main():
         df = numeric_df(df, 'Cases')
         df = sort_df(df, 'Cases')
         df.to_csv('lawyers.csv', index=False)
+
         return lawyers_data
 
 if __name__ == '__main__':
