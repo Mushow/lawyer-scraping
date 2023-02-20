@@ -1,11 +1,11 @@
 import asyncio
 import re
 import time
+
 import aiohttp
 import pandas as pd
-
-from Lawyer import Lawyer
 from bs4 import BeautifulSoup
+from Lawyer import Lawyer
 
 
 async def get_links(session, url):
@@ -67,14 +67,25 @@ def format_lawyers(lawyers_array):
     return lawyers_data
 
 
+def sort_df(df, value):
+    df = df.sort_values(value, ascending=True)
+    return df
+
+
+def numeric_df(df, param):
+    df[param] = pd.Series(df[param], dtype="Int64")
+    return df
+
+
 async def main():
     baseUrl = "https://www.barreaulyon.com"
     uri = "/annuaire?paged="
+    lastPage = 333
 
     async with aiohttp.ClientSession() as session:
         links_tasks = []
         lawyers_tasks = []
-        for pageNb in range(1, 10 + 1):
+        for pageNb in range(1, lastPage + 1):
             url = baseUrl + uri + str(pageNb)
             links_tasks.append(get_links(session, url))
 
@@ -89,19 +100,10 @@ async def main():
         lawyers_data = format_lawyers(lawyers_array)
 
         df = pd.DataFrame(lawyers_data)
-        df = df.sort_values('Name', ascending=True)
-        df = clean_data(df)
+        df = numeric_df(df, 'Cases')
+        df = sort_df(df, 'Cases')
         df.to_csv('lawyers.csv', index=False)
-
         return lawyers_data
-
-
-def clean_data(data_frame):
-
-    # Clean data
-
-    return data_frame
-
 
 if __name__ == '__main__':
     tic = time.perf_counter()
