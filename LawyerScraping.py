@@ -1,9 +1,10 @@
 import asyncio
 import re
 import time
-from Lawyer import Lawyer
 import aiohttp
 import pandas as pd
+
+from Lawyer import Lawyer
 from bs4 import BeautifulSoup
 
 
