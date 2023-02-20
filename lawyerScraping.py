@@ -4,8 +4,8 @@ import time
 
 import aiohttp
 import pandas as pd
-import cleanCsv
 from bs4 import BeautifulSoup
+
 from lawyer import Lawyer
 
 
