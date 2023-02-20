@@ -78,8 +78,8 @@ def numeric_df(df, param):
 
 
 async def main():
-    baseUrl = "https://www.barreaulyon.com"
-    uri = "/annuaire?paged="
+    baseUrl = "https://www.barreaulyon.com/"
+    uri = "annuaire?paged="
     lastPage = 333
 
     async with aiohttp.ClientSession() as session:
