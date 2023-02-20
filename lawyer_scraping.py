@@ -21,29 +21,29 @@ def get_clean_text(text):
 async def get_lawyer(session, link):
     async with session.get(link) as response:
         soup = BeautifulSoup(await response.text(), 'lxml')
-        nameElement = soup.find('header', class_='entry-header')
-        numberElement = soup.find('div', class_='entry-infos__item--tel')
-        emailElement = soup.find('div', class_='entry-infos__item--mail')
-        subsequentInformation = soup.findAll('div', class_='entry-content__item')
+        name_element = soup.find('header', class_='entry-header')
+        number_element = soup.find('div', class_='entry-infos__item--tel')
+        email_element = soup.find('div', class_='entry-infos__item--mail')
+        subsequent_information = soup.findAll('div', class_='entry-content__item')
 
         try:
-            name = get_clean_text(nameElement.find('h1'))
-            number = get_clean_text(numberElement.find('a'))
-            email = get_clean_text(emailElement.find('a'))
-            cases = swornDate = address = postalCode = None
-            for info in subsequentInformation:
+            name = get_clean_text(name_element.find('h1'))
+            number = get_clean_text(number_element.find('a'))
+            email = get_clean_text(email_element.find('a'))
+            cases = sworn_date = address = postal_code = None
+            for info in subsequent_information:
                 key = info.find('b').text
                 match key:
                     case "Case":
                         cases = get_clean_text(info.find('p'))
                     case "Prestation de serment":
-                        swornDate = get_clean_text(info.find('p'))
+                        sworn_date = get_clean_text(info.find('p'))
                     case "Rue":
                         address = get_clean_text(info.find('p')).replace(" ", " ")
                     case "Code postal":
-                        postalCode = get_clean_text(info.find('p')).upper()
+                        postal_code = get_clean_text(info.find('p')).upper()
 
-            return Lawyer(name, number, email, cases, swornDate, address, postalCode)
+            return Lawyer(name, number, email, cases, sworn_date, address, postal_code)
         except AttributeError:
             pass
 
@@ -88,7 +88,7 @@ async def main():
         lawyers_data = format_lawyers(lawyers_array)
 
         df = pd.DataFrame(lawyers_data)
-        df = df.sort_values('Cases', ascending=False)
+        df = df.sort_values('Name', ascending=True)
         df.to_csv('lawyers.csv', index=False)
 
         return lawyers_data
