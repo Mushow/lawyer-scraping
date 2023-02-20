@@ -5,9 +5,15 @@ def readCsv(file):
     return pd.read_csv(file)
 
 
-def checkDupes(df, column):
+def sanitiseDupes(df, column):
     mask = df.loc[df[column].duplicated(keep=False), :]
     df.loc[mask, column] = ""
+    return df
+
+
+def sanitiseHeight(df, column):
+    df[column] = df[column].str[:-1]
+    df[column] = pd.to_numeric(df[column], errors='coerce')
     return df
 
 
