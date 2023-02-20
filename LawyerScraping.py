@@ -91,6 +91,7 @@ async def main():
         df = df.sort_values('Name', ascending=True)
         df = df.loc[df['Phone'].duplicated(keep=False), :]
         df = df.loc[df['Name'].duplicated(keep=False), :]
+        df['Sworn Date'] = pd.to_datetime(df['Sworn Date'], format='%d/%m/%Y', errors='coerce')
         df.to_csv('lawyers.csv', index=False)
 
         return lawyers_data
