@@ -73,7 +73,7 @@ async def main():
     async with aiohttp.ClientSession() as session:
         links_tasks = []
         lawyers_tasks = []
-        for pageNb in range(1, 333+1):
+        for pageNb in range(1, 10 + 1):
             url = baseUrl + uri + str(pageNb)
             links_tasks.append(get_links(session, url))
 
@@ -89,6 +89,8 @@ async def main():
 
         df = pd.DataFrame(lawyers_data)
         df = df.sort_values('Name', ascending=True)
+        df = df.loc[df['Phone'].duplicated(keep=False), :]
+        df = df.loc[df['Name'].duplicated(keep=False), :]
         df.to_csv('lawyers.csv', index=False)
 
         return lawyers_data
