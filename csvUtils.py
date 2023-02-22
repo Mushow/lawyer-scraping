@@ -12,8 +12,8 @@ def sanitiseDupes(df, column):
 
 
 def sanitiseHeight(df, column):
-    df[column] = df[column].str[:-1]
-    df[column] = pd.to_numeric(df[column], errors='coerce')
+    df = df[column].str[:-1]
+    pd.to_numeric(df[column], errors='coerce')
     return df
 
 
@@ -28,13 +28,28 @@ def toNumeric(df, column):
 
 
 def nullToMean(df, column):
-    df.loc[df[column].isnull(), column] = df[column].mean()
+    df[column] = pd.to_numeric(df[column], downcast='integer', errors='coerce')
+    df[column] = df[column].fillna(value=df[column].mean())
+    return df
+
+
+def nullToZero(df, column):
+    df[column] = df[column].fillna(value=0)
+    return df
+
+
+def dropNull(df, columnsArray):
+    df = df.dropna(subset=columnsArray)
+    return df
+
+
+def nullToUnknown(df, column):
+    df[column] = df[column].fillna(value="Unknown")
     return df
 
 
 def defaultDateTime(df, column):
-    df[column] = pd.to_datetime(df[column], format='%d/%m/%Y', errors='coerce')
-    return df
+    return pd.to_datetime(df[column], format='%d/%m/%Y', errors='coerce')
 
 
 def toCsv(df, name):
