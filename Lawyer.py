@@ -22,7 +22,7 @@ class Lawyer:
         self.address = address
         return self
 
-    def set_website(self,website):
+    def set_website(self, website):
         self.website = website
 
     def get_name(self):
