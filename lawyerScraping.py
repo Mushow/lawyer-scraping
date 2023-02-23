@@ -66,16 +66,19 @@ def format_lawyers(lawyers_array):
                 'Number': lawyer.get_number(),
                 'Email': lawyer.get_email(),
                 'Address': lawyer.get_address(),
-                'Website': "https://" + website if website and not website.startswith("https://") else website
+                'Website': lawyer.get_website()
             }
             lawyers_data.append(lawyer_dict)
+    messages.dictionnary_conversion_success()
 
     return lawyers_data
 
 
 def main():
+    messages.starting_scraping()
     lawyers = [get_card_info(card) for page in get_links() if (soup := swoup(page)) for card in find_lawyer_cards(soup)]
     lawyers = format_lawyers(lawyers)
+    messages.export()
     pd.DataFrame(lawyers).to_csv("lawyers.csv", index=False)
     messages.finished_success()
 
