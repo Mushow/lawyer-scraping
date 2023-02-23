@@ -6,7 +6,8 @@ import aiohttp
 import pandas as pd
 from bs4 import BeautifulSoup
 
-from lawyer import Lawyer
+import csvUtils
+from Lawyer import Lawyer
 
 
 async def get_links(session, url):
@@ -99,15 +100,10 @@ def sort_df(df, value):
     return df
 
 
-def numeric_df(df, param):
-    df[param] = pd.to_numeric(df[param], errors='coerce')
-    return df
-
-
 async def main():
     baseUrl = "https://www.barreaulyon.com/"
     uri = "annuaire?paged="
-    lastPage = 5
+    lastPage = 333
 
     async with aiohttp.ClientSession() as session:
         links_tasks = []
@@ -127,14 +123,25 @@ async def main():
         lawyers_data = format_lawyers(lawyers_array)
 
         df = pd.DataFrame(lawyers_data)
-        df = numeric_df(df, 'Cases')
         df = sort_df(df, 'Cases')
+        print(df.values.tolist())
+        df = csvUtils.nullToZero(df, 'Cases')
+
+        keywords = ['city', 'address', 'sworn date']
+
+        for col in df.columns:
+            if any(keyword in col.lower() for keyword in keywords):
+                df = csvUtils.nullToUnknown(df, col)
+
+        df = csvUtils.dropNull(df, ['Phone', 'Email'])
+
         df.to_csv('lawyers.csv', index=False)
 
         return lawyers_data
 
 if __name__ == '__main__':
     tic = time.perf_counter()
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     lawyers = asyncio.run(main())
     toc = time.perf_counter()
     print(f"Retrieved {len(lawyers)} lawyers in {toc - tic:0.4f} seconds")
