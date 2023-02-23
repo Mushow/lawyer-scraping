@@ -8,6 +8,7 @@ scraping_page_start = "Page N°"
 scraping_page_end = "has been scraped"
 links = "The links have been correctly retrieved"
 done = "Done!"
+dupes_cleaned = "dupes have been cleaned"
 
 
 def response_error():
@@ -36,3 +37,7 @@ def export():
 
 def starting_scraping():
     print(starting)
+
+
+def dupes(column):
+    print(success_prefix, column, dupes_cleaned)
