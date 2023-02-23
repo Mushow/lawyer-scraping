@@ -74,12 +74,7 @@ def format_lawyers(lawyers_array):
 
 
 def main():
-    lawyers = []
-    for page in get_links():
-        soup = swoup(page)
-        if soup:
-            success_soup(page)
-            lawyers.extend(get_card_info(card) for card in find_lawyer_cards(soup))
+    lawyers = [get_card_info(card) for page in get_links() if (soup := swoup(page)) for card in find_lawyer_cards(soup)]
     lawyers = format_lawyers(lawyers)
     pd.DataFrame(lawyers).to_csv("lawyers.csv", index=False)
     messages.finished_success()
