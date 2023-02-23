@@ -4,13 +4,14 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
+import csvUtils
 import messages
 from Lawyer import Lawyer
 
 base_url = "https://www.barreaulyon.com"
 uri = "/annuaire?paged="
 final_url = base_url + uri
-total_pages = 15
+total_pages = 333
 
 
 def swoup(url):
@@ -60,7 +61,6 @@ def format_lawyers(lawyers_array):
     lawyers_data = []
     for lawyer in lawyers_array:
         if lawyer:
-            website = lawyer.get_website()
             lawyer_dict = {
                 'Name': lawyer.get_name(),
                 'Number': lawyer.get_number(),
@@ -74,12 +74,21 @@ def format_lawyers(lawyers_array):
     return lawyers_data
 
 
+def sanitise_dataframe(data_frame):
+    data_frame = csvUtils.sanitise_dupes(data_frame, "Email")
+
+    return data_frame
+
+
 def main():
     messages.starting_scraping()
     lawyers = [get_card_info(card) for page in get_links() if (soup := swoup(page)) for card in find_lawyer_cards(soup)]
     lawyers = format_lawyers(lawyers)
     messages.export()
-    pd.DataFrame(lawyers).to_csv("lawyers.csv", index=False)
+    data_frame = pd.DataFrame(lawyers)
+    data_frame = sanitise_dataframe(data_frame)
+    data_frame.to_csv("lawyers.csv", index=False)
+
     messages.finished_success()
 
 
