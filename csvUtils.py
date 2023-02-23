@@ -11,12 +11,6 @@ def sanitiseDupes(df, column):
     return df
 
 
-def sanitiseHeight(df, column):
-    df = df[column].str[:-1]
-    pd.to_numeric(df[column], errors='coerce')
-    return df
-
-
 def sanitiseEmails(df, column):
     df[column] = df[column].str.split(',', n=1, expand=True)[0]
     return df
@@ -46,11 +40,6 @@ def dropNull(df, columnsArray):
 def nullToUnknown(df, column):
     df[column] = df[column].fillna(value="Unknown")
     return df
-
-
-def defaultDateTime(df, column):
-    return pd.to_datetime(df[column], format='%d/%m/%Y', errors='coerce')
-
 
 def toCsv(df, name):
     df.to_csv(name, index=False)
