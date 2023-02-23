@@ -40,10 +40,7 @@ def clean_text(text):
 
 
 def get_info(card, class_name):
-    try:
-        return clean_text(card.find("p", class_=class_name))
-    except (AttributeError, TypeError):
-        return ""
+    return clean_text(card.find("p", class_=class_name)) if card.find("p", class_=class_name) else None
 
 
 def get_card_info(card):
