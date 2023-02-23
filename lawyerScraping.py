@@ -74,9 +74,7 @@ def format_lawyers(lawyers_array):
 
 
 def sanitise_dataframe(data_frame):
-    data_frame = csvUtils.sanitise_dupes(data_frame, "Email")
-
-    return data_frame
+    return csvUtils.sanitise_dupes(data_frame, "Email")
 
 
 def main():
