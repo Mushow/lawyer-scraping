@@ -4,8 +4,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-import csvUtils
-import messages
+from utils import messages, csvUtils
 from Lawyer import Lawyer
 
 base_url = "https://www.barreaulyon.com"
