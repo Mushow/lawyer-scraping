@@ -8,7 +8,7 @@ scraping_page_start = "Page N°"
 scraping_page_end = "has been scraped"
 links = "The links have been correctly retrieved"
 done = "Done!"
-dupes_cleaned = "dupes have been cleaned"
+dupes_cleaned = "dupes have been cleaned
 
 
 def response_error():
