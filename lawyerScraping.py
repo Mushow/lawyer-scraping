@@ -3,7 +3,6 @@ import re
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-
 from utils import messages, csvUtils
 from Lawyer import Lawyer
 
@@ -73,17 +72,13 @@ def format_lawyers(lawyers_array):
     return lawyers_data
 
 
-def sanitise_dataframe(data_frame):
-    return csvUtils.sanitise_dupes(data_frame, "Email")
-
-
 def main():
     messages.starting_scraping()
     lawyers = [get_card_info(card) for page in get_links() if (soup := swoup(page)) for card in find_lawyer_cards(soup)]
     lawyers = format_lawyers(lawyers)
     messages.export()
     data_frame = pd.DataFrame(lawyers)
-    data_frame = sanitise_dataframe(data_frame)
+    data_frame = csvUtils.sanitise_dupes(data_frame, "Email")
     data_frame.to_csv("lawyers.csv", index=False)
 
     messages.finished_success()
