@@ -10,6 +10,7 @@ base_url = "https://www.barreaulyon.com"
 uri = "/annuaire?paged="
 final_url = base_url + uri
 total_pages = 333
+file = "lawyers"
 
 
 def swoup(url):
@@ -79,7 +80,7 @@ def main():
     messages.export()
     data_frame = pd.DataFrame(lawyers)
     data_frame = csvUtils.sanitise_dupes(data_frame, "Email")
-    data_frame.to_csv("lawyers.csv", index=False)
+    data_frame.to_csv(file + ".csv", index=False)
 
     messages.finished_success()
 
